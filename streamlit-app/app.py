@@ -4,13 +4,20 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.llm.clients.salamandra_client import SalamandraClient
+from src.llm.clients.groq_llama_client import GroqClient
 import base64
+from dotenv import load_dotenv
+import html
+
+load_dotenv()
 
 # Initialize client
-client = SalamandraClient()
+# client = SalamandraClient()
+groq_client = GroqClient()
 
 #Load File Paths
-file_paths = ['../data/finetune.txt','../data/output_admissio.data','../data/output_agenda.data','../data/output_admissio.data', '../data/output_abans-de-matricular-te-estudis-iniciats.data', '../data/output_acreditacio-de-coneixements-d-idiomes.data']
+# file_paths = ['../data/finetune.txt','../data/output_admissio.data','../data/output_agenda.data','../data/output_admissio.data', '../data/output_abans-de-matricular-te-estudis-iniciats.data', '../data/output_acreditacio-de-coneixements-d-idiomes.data']
+file_paths = ['data/acreditacio_idiomes.json', 'data/nota_mitjana.json', 'data/devolucio_preus_publics.json']
 
 # Set the Streamlit configuration for the app
 st.set_page_config(
@@ -33,12 +40,15 @@ def get_context(file_paths):
         # Try opening the file with different encodings
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
+                # html.unescape(file.read())
                 file_content = file.read()
+                file_content = html.unescape(file_content)
                 context += file_content + "\n"
         except UnicodeDecodeError:
             try:
                 with open(file_path, 'r', encoding='ISO-8859-1') as file:
                     file_content = file.read()
+                    file_content = html.unescape(file_content)
                     context += file_content + "\n"
             except UnicodeDecodeError:
                 raise Exception(f"No se pudo leer el archivo {file_path} con 'utf-8' ni 'ISO-8859-1'.")
@@ -72,10 +82,12 @@ with col2:
         st.write("Escriu la teva pregunta.")
 
         # Recibir input del usuario
-        instrucció = st.text_input("Pregunta:")
+        instruction = st.text_input("Pregunta:")
 
         # Si el usuario ha ingresado una pregunta, obtener la respuesta
-        if instrucció:
-            res = client.givePrediction(instrucció, context)
+        if instruction:
+            # res = client.givePrediction(instrucció, context)
+            res = groq_client.generate_response(instruction, context)
+
 
             st.markdown(f"Respuesta: {res}")
