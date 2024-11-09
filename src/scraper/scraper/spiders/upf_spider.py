@@ -11,10 +11,19 @@ class UpfSpider(scrapy.Spider):
         'DEFAULT_REQUEST_HEADERS': {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0',
         },
-        "DEPTH_LIMIT": 2,
+        "DEPTH_LIMIT": 1,
         'ROBOTSTXT_OBEY': True,
         'DUPEFILTER_CLASS': 'scrapy.dupefilters.RFPDupeFilter'
     }
+
+    def start_requests(self):
+        cookies = {
+            'GUEST_LANGUAGE_ID': 'ca_ES',
+        }
+
+        # Start the requests with cookies
+        for url in self.start_urls:
+            yield scrapy.Request(url, callback=self.parse, cookies=cookies)
 
     def parse(self, response):
         content_type = response.headers.get('Content-Type', b'').decode('utf-8')
@@ -30,10 +39,13 @@ class UpfSpider(scrapy.Spider):
         if 'text' in content_type or 'json' in content_type:
             content = response.text
             content = self.clean_html(content)
-            
+            filename = f"output_{response.url.split('/')[-1]}.data"
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(content)
             # Add the content to the item
             item['content'] = content
             
+
 
             # Follow links and continue scraping
             for link in response.css('a::attr(href)').getall():

@@ -9,7 +9,6 @@ from itemadapter import ItemAdapter
 from bson.binary import Binary
 from scrapy.exceptions import DropItem
 import pymongo
-import logging
 
 
 class ScraperPipeline:

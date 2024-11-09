@@ -2,8 +2,6 @@ import requests
 import os
 from dotenv import load_dotenv
 from transformers import AutoTokenizer
-import torch
-from transformers import pipeline
 
 load_dotenv()
 

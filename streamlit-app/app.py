@@ -5,16 +5,16 @@ from styles import inject_custom_css
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.summarizer.salamandra_client import SalamandraClient
+# from src.llm.salamandra_clients import SalamandraClient
 
 file_path = '../src/summarizer/data/finetune.txt'
 
 
-with open(file_path, 'r', encoding='utf-8') as file:
-    file_content = file.read()
+#with open(file_path, 'r', encoding='utf-8') as file:
+    #file_content = file.read()
 
 
-client = SalamandraClient()
+# client = SalamandraClient()
 # Set the Streamlit configuration for the app
 st.set_page_config(
     page_title="Campus Global Upf",
@@ -34,7 +34,7 @@ st.write("Escriu la teva pregunta.")
 instrucció = st.text_input("Pregunta:")
 
 # Si el usuario ha ingresado una pregunta, obtener la respuesta
-if instrucció:
-    res = client.givePrediction(instrucció, file_content)
-    st.write(f"Respuesta: {res}")
+# if instrucció:
+    # res = client.givePrediction(instrucció, file_content)
+    # st.write(f"Respuesta: {res}")
 
