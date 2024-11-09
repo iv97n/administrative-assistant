@@ -10,4 +10,4 @@ with open(file_path, 'r', encoding='utf-8') as file:
 client = SalamandraClient()
 instrucció = "Es pot reconèixer pel b2 de català?"
 
-print(client.givePrediction(instrucció, file_content))
+print(client.give_prediction(instrucció, file_content))

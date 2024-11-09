@@ -52,7 +52,7 @@ class SalamandraClient(object):
         """
         return self.query_model(text)
     
-    def givePrediction(self, instruction, context):
+    def give_prediction(self, instruction, context):
         # Use instruction and context to form a RAG prompt
         prompt = f"Instruction\n{instruction}\nContext\n{context}\nAnswer\n"
 
