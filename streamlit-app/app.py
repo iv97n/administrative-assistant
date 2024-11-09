@@ -8,9 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # from src.llm.clients.salamandra_client import SalamandraClient
 from src.llm.clients.groq_llama_client import GroqClient
 from src.llm.utils.utils import parse_document
-import base64
 from dotenv import load_dotenv
-import html
 
 load_dotenv()
 
