@@ -30,5 +30,7 @@ RUN poetry install --no-root --no-dev
 # Copy the rest of the application files (excluding files specified in .dockerignore)
 COPY . .
 
+
 # Set the entrypoint or command to run the application (assuming main.py is the entry point)
-CMD ["poetry", "run", "python", "streamlit-app/app.py"]
+ENTRYPOINT ["streamlit", "run", "streamlit-server/app.py", "--server.port=8501"]
+
