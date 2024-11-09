@@ -7,9 +7,15 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-MONGO_URI = 'mongodb://localhost:27017'  # replace with your MongoDB URI
-MONGO_DATABASE = 'ainahack'  # replace with your database name
-MONGO_COLLECTION = 'ainahack'  # replace with your collection name
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI")
+MONGO_DATABASE = os.getenv("MONGO_DATABASE")  
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")  
 
 ITEM_PIPELINES = {
     'scraper.pipelines.ScraperPipeline': 1,  # Adjust the path to where your pipeline is defined
