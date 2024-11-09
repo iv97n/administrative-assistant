@@ -8,7 +8,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 # from src.llm.clients.salamandra_client import SalamandraClient
 from llm.clients.groq_llama_client import GroqClient
 from llm.clients.salamandra_client import SalamandraClient
-from llm.utils.utils import parse_document
+from llm.utils.utils import parse_document, retrieve_documents
+from llm.clients.embedding import DocumentRanker
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,13 +33,10 @@ st.set_page_config(
 inject_custom_css()
 
 def get_context(file_paths):
-    context = ""
-    for file_path in file_paths:
-        with open(file_path, "r") as file:
-            text_content = parse_document(file)
-            context += text_content + "\n"
-    return context
+    for document in retrieve_documents(os.getenv('MONGO_URI'), os.getenv('MONGO_DATABASE'), os.getenv('MONGO_COLLECTION')):
+        yield parse_document(document)
 
+ranker = DocumentRanker()
 
 # Get context
 context = get_context(file_paths)
@@ -48,7 +46,7 @@ with st.sidebar:
     model = st.radio(
     "Quin model vols utilitzar?",
     ["Salamandra", "Llama3"],
-    index=None,
+    index=0,
     )
 
   
@@ -60,9 +58,9 @@ with st.sidebar:
 
     # Recibir input del usuario
     instruction = st.text_input("Pregunta:")
-
     # Si el usuario ha ingresado una pregunta, obtener la respuesta
     if instruction:
+        context = ranker.get_context_from_ranked_documents(instruction, [document for document in context], top_k=5)
         if model == "Salamandra":
             res = salamandra_client.givePrediction(instruction, context)
         if model == "Llama3":
