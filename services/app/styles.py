@@ -1,5 +1,6 @@
 import streamlit as st
 import base64
+import os
 
 def get_base64_image(image_path):
     """Read and encode an image to base64."""
@@ -14,9 +15,11 @@ def inject_custom_css():
     COLOR_BACKGROUND = "#000000"  # Black Background
     COLOR_HEADER = "#000000"  # White Header
     COLOR_CARD = "#FFFFFF"  # White Card
-    
+
+
+    media_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'media'))
     # Load and encode the background image to base64
-    base64_image = get_base64_image("media/fondo.png")  # Ensure the image path is correct
+    base64_image = get_base64_image(str(os.path.join(media_path, 'fondo.png')))  # Ensure the image path is correct
     
     # Inject CSS into Streamlit app
     st.markdown(f"""
@@ -49,30 +52,10 @@ def inject_custom_css():
         color: {COLOR_HEADER};
     }}
 
-    /* Card container styling */
-    .card {{
-        background-color: {COLOR_CARD};
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-        margin-bottom: 20px;
-    }}
 
     /* Links styling */
     a {{
         color: {COLOR_PRIMARY};
-    }}
-
-    /* Text container with transparent white background */
-    .stTextContainer {{
-        background-color: rgba(255, 255, 255, 0.4);  /* 40% transparency with white */
-        padding: 20px;
-        border-radius: 10px;
-        color: {COLOR_TEXT};
-        max-width: 1250px;
-        margin: 20px auto;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-        font-size: 18px;
     }}
 
     .custom-subheader-plot {{
@@ -85,21 +68,6 @@ def inject_custom_css():
         color: {COLOR_TEXT} !important;
     }}
 
-    /* Streamlit markdown text styling */
-    .stMarkdown {{
-        background-color: rgba(255, 255, 255, 0.9);  /* 90% transparency with white */
-        padding: 20px;
-        border-radius: 10px;
-        color: {COLOR_TEXT};
-        max-width: 1250px;
-        margin: 20px auto;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }}
-    .stColumn {{
-        background-color: rgba(255, 0, 0, 0.2);  /* Example: Light red with transparency */
-        padding: 20px;
-        border-radius: 10px;
-    # }}
-
     </style>
     """, unsafe_allow_html=True)
+

@@ -4,20 +4,22 @@ import sys
 import os
 
 # Path setup for SalamandraClient
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 # from src.llm.clients.salamandra_client import SalamandraClient
-from src.llm.clients.groq_llama_client import GroqClient
-from src.llm.utils.utils import parse_document
+from llm.clients.groq_llama_client import GroqClient
+from llm.clients.salamandra_client import SalamandraClient
+from llm.utils.utils import parse_document
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Initialize SalamandraClient and ChatEngine
 groq_client = GroqClient(api_key=os.getenv("GROQ_API_KEY"))
-
+salamandra_client = SalamandraClient()
 #Load File Paths
+data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
 # file_paths = ['../data/finetune.txt','../data/output_admissio.data','../data/output_agenda.data','../data/output_admissio.data', '../data/output_abans-de-matricular-te-estudis-iniciats.data', '../data/output_acreditacio-de-coneixements-d-idiomes.data']
-file_paths = ['../data/acreditacio_idiomes.json', '../data/nota_mitjana.json', '../data/devolucio_preus_publics.json']
+file_paths = [os.path.join(data_path, 'acreditacio_idiomes.json'), os.path.join(data_path, 'nota_mitjana.json'), os.path.join(data_path, 'devolucio_preus_publics.json')]
 
 # Set the Streamlit configuration for the app
 st.set_page_config(
@@ -42,6 +44,13 @@ def get_context(file_paths):
 context = get_context(file_paths)
 
 with st.sidebar:
+
+    model = st.radio(
+    "Quin model vols utilitzar?",
+    ["Salamandra", "Llama3"],
+    index=None,
+    )
+
   
     # Título de la app
     st.title("Chatbot Simple")
@@ -54,8 +63,9 @@ with st.sidebar:
 
     # Si el usuario ha ingresado una pregunta, obtener la respuesta
     if instruction:
-        # res = client.givePrediction(instrucció, context)
-        res = groq_client.generate_response(instruction, context)
-
+        if model == "Salamandra":
+            res = salamandra_client.givePrediction(instruction, context)
+        if model == "Llama3":
+            res = groq_client.generate_response(instruction, context)
 
         st.markdown(res)

@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from transformers import AutoTokenizer
 
-
 load_dotenv()
 
 
@@ -16,7 +15,6 @@ class SalamandraClient(object):
 
         self.HF_TOKEN = os.getenv("HF_TOKEN")
         self.BASE_URL = os.getenv("BASE_URL")
-        #self.pipe = pipeline("text-generation", model=model_name)
         
 
         self.headers = {
@@ -25,10 +23,25 @@ class SalamandraClient(object):
             "Content-Type": "application/json"
         }
 
-    def query_model(self, text):
-        system_prompt = "you are a helpful assistant"
-        message = [ { "role": "system", "content": system_prompt} ]
-        message += [ { "role": "user", "content": text } ]
+    def query_model(self, text, context=None):
+
+        if isinstance(text, list):
+        # Concatenate the "role" and "content" fields into a single prompt string
+            text = "\n".join([f"{entry['role']}: {entry['content']}" for entry in text])
+
+
+        # System prompt for model setup
+        system_prompt = "You are a helpful assistant."
+        message = [{"role": "system", "content": system_prompt}]
+
+        # If context is provided, add it as part of the system message for model context
+        if context:
+            context_message = f"Context: {context}"
+            message.append({"role": "system", "content": context_message})
+
+        # Add the main user query as usual
+        message.append({"role": "user", "content": text})
+
         prompt = self.tokenizer.apply_chat_template(
             message,
             tokenize=False,
@@ -53,33 +66,35 @@ class SalamandraClient(object):
         """
         return self.query_model(text)
     
-    def givePrediction(self, instruction, file_paths):
 
-        context = ""
-        for file_path in file_paths:
-            # Intentamos abrir el archivo con diferentes codificaciones
-            try:
-                with open(file_path, 'r', encoding='utf-8') as file:
-                    file_content = file.read()
-                    context +=file_content+"\n"
-            except UnicodeDecodeError:
-                try:
-                    with open(file_path, 'r', encoding='ISO-8859-1') as file:
-                        file_content = file.read()
-                        context +=file_content+"\n"
-
-                except UnicodeDecodeError:
-                    raise Exception(f"No se pudo leer el archivo {file_path} con 'utf-8' ni 'ISO-8859-1'.")
+    def givePrediction(self, instruction, context=None):
        
-        # Use instruction and context to form a RAG prompt
-        prompt = f"Instruction\n{instruction}\nContext\n{context}\nAnswer\n"
+        if isinstance(instruction, list):
+        # Concatenate the "role" and "content" fields into a single prompt string
+            instruction = "\n".join([f"{entry['role']}: {entry['content']}" for entry in context])
 
+        # System prompt for model setup
+        system_prompt = "You are a helpful assistant."
+        message = [{"role": "system", "content": system_prompt}]
 
+        # If context is provided, add it as part of the system message for model context
+        if context:
+            context_message = f"Context: {context}"
+            message.append({"role": "system", "content": context_message})
+
+        # Add the main user query as usual
+        message.append({"role": "user", "content": instruction})
+
+        prompt = self.tokenizer.apply_chat_template(
+            message,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
         # Prepare payload for the API request
         payload = {
             "inputs": prompt,
             "parameters": {}
-        }
+        }   
 
         # Make the API request
         api_url = self.BASE_URL + "/generate"
@@ -94,3 +109,4 @@ class SalamandraClient(object):
         else:
             print(f"Error {response.status_code}: {response.text}")
             return None
+    
