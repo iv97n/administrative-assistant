@@ -16,6 +16,7 @@ transformers = "^4.46.2"
 requests = "^2.32.3"
 streamlit = "^1.40.0"
 styles = "^0.2.0"
+groq = "^0.11.0"
 
 [build-system]
 requires = ["poetry-core"]
