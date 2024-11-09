@@ -5,6 +5,7 @@ import os
 
 # Path setup for SalamandraClient
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+<<<<<<< Updated upstream
 from src.llm.clients.salamandra_client import SalamandraClient
 import base64
 
@@ -36,12 +37,29 @@ file_paths = ['../data/finetune.txt','../data/output_admissio.data','../data/out
               '../data/output_acreditacio-de-coneixements-d-idiomes.data']
 
 # Set Streamlit configuration
+=======
+from src.summarizer.salamandra_client import SalamandraClient
+import base64
+
+file_paths = ['../data/output_admissio.data','../data/output_agenda.data','../data/output_admissio.data', '../data/output_abans-de-matricular-te-estudis-iniciats.data', '../data/output_acreditacio-de-coneixements-d-idiomes.data']
+client = SalamandraClient()
+# Set the Streamlit configuration for the app
+>>>>>>> Stashed changes
 st.set_page_config(
     page_title="Campus Global Upf",
     page_icon="https://www.upf.edu/o/upf-portal-6-2-theme/images/favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+# Custom local background image
+background_image_path = "media/fondo.png"  # Replace with the path to your background image
+
+# Function to convert image to base64 for embedding
+def get_image_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
+
+base64_image = get_image_base64("media/fondo.png")
 
 # Get the context for Salamandra
 @st.cache_data
@@ -63,6 +81,7 @@ def get_context(file_paths):
                 raise Exception(f"Cannot read file {file_path} with 'utf-8' or 'ISO-8859-1'.")
     return context
 
+<<<<<<< Updated upstream
 inject_custom_css()
 
 context = get_context(file_paths)
@@ -104,3 +123,42 @@ if user_input:
         avatar_image = user_avatar_path if chat["sender"] == "user" else bot_avatar_path
         with st.chat_message(chat["sender"], avatar=avatar_image):
             st.write(chat["message"])
+=======
+# Full absolute path to the image
+full_image_path = os.path.abspath("media/fondo.png")
+st.markdown(
+    f"""
+    <style>
+        body {{
+            background-image: url('file://{full_image_path}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+col1, col2 = st.columns([5, 1])
+
+with col2:
+    # Button to toggle the chatbot
+    if st.button("Chatbot"):
+        st.session_state.chatbot_visible = True
+
+    if 'chatbot_visible' in st.session_state and st.session_state.chatbot_visible:
+        # Título de la app
+        st.title("Chatbot Simple")
+
+        # Instrucciones iniciales
+        st.write("Escriu la teva pregunta.")
+
+        # Recibir input del usuario
+        instrucció = st.text_input("Pregunta:")
+
+        # Si el usuario ha ingresado una pregunta, obtener la respuesta
+        if instrucció:
+            res = client.givePrediction(instrucció, file_paths)
+            st.write(f"Respuesta: {res}")
+>>>>>>> Stashed changes
