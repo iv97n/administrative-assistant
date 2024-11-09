@@ -87,7 +87,7 @@ def inject_custom_css():
 
     /* Streamlit markdown text styling */
     .stMarkdown {{
-        background-color: rgba(255, 255, 255, 0.9);  /* 40% transparency with white */
+        background-color: rgba(255, 255, 255, 0.9);  /* 90% transparency with white */
         padding: 20px;
         border-radius: 10px;
         color: {COLOR_TEXT};

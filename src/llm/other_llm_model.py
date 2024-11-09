@@ -2,9 +2,13 @@ from groq import Groq
 import base64
 import html
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-groq_client = Groq(api_key=GROQ_API_KEY)
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def parse_document(doc):
@@ -28,7 +32,7 @@ for file_path in file_paths:
 
 def groq_prompt(prompt):
     convo = [
-        {'role': 'system', 'content': context},  # Context provided here
+        {'role': 'system', 'content': ''+ context},  # Context provided here
         {'role': 'user', 'content': prompt}
     ]
     chat_response = groq_client.chat.completions.create(messages=convo, model='llama3-70b-8192')

@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import base64
 import html
+import json
 
 
 def retrieve_documents(mongo_uri, mongo_db, mongo_collection):
@@ -13,6 +14,7 @@ def retrieve_documents(mongo_uri, mongo_db, mongo_collection):
 
 
 def parse_document(doc):
+    doc = json.load(doc)
     # Decode the base64 content
     binary_content = base64.b64decode(doc["content"]["$binary"]["base64"])
     # Convert to a string (assuming UTF-8 encoding) and return it
