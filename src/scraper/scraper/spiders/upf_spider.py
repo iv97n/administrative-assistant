@@ -5,30 +5,43 @@ from urllib.parse import urlparse
 
 class UpfSpider(scrapy.Spider):
     name = 'upf_spider'
-    start_urls = ['https://www.upf.edu/web/secretaria-grau/acreditacio-de-coneixements-d-idiomes']
+    start_urls = ['https://www.upf.edu/web/secretaria-grau/tramits']
 
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0',
-            'ROBOTSTXT_OBEY': True,
-        }
+        },
+        "DEPTH_LIMIT": 2,
+        'ROBOTSTXT_OBEY': True
     }
 
     def parse(self, response):
+        content_type = response.headers.get('Content-Type', b'').decode('utf-8')
         filename = f"output_{response.url.split('/')[-1]}.data"
 
-        content = response.body.decode('utf-8')  
-    
-        content = self.clean_html(content)
+        if 'text' in content_type or 'json' in content_type:
+            content = response.text
         
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(content)
-                
+            content = self.clean_html(content)
+
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+            for link in response.css('a::attr(href)').getall():
+                if link and link.startswith('/') or link.startswith(response.url):
+                    absolute_url = response.urljoin(link)
+                    yield scrapy.Request(absolute_url, callback=self.parse)
+        else:
+            content = response.body 
+
+            with open(filename, 'wb') as f:
+                f.write(content)
+        """    
         for link in response.css('a::attr(href)').getall():
             if link and link.startswith('/') or link.startswith(response.url):
                 absolute_url = response.urljoin(link)
                 yield scrapy.Request(absolute_url, callback=self.parse)
-    
+        """
     
     def clean_html(self, text):
         # 1. Remove <script> and <style> content
