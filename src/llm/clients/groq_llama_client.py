@@ -5,9 +5,13 @@ class GroqClient(object):
         self.groq_client = Groq(api_key=api_key)
 
     def generate_response(self, prompt, context):
+
+        language_instruction = "Contesta sempre en català."
+
         # Prepare the conversation with the provided context and the user prompt
         convo = [
             {'role': 'system', 'content': context},  # Pass the context directly
+            {'role': 'system', 'content': language_instruction},  # Language instruction
             {'role': 'user', 'content': prompt}
         ]
         
