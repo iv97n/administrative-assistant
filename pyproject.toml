@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ainahack"
+version = "0.1.0"
+description = ""
+authors = ["iv97n <ivan.heg.03@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Scrapy = "^2.11.2"
+itemadapter = "^0.9.0"
+bson = "^0.5.10"
+pymongo = "^4.10.1"
+python-dotenv = "^1.0.1"
+transformers = "^4.46.2"
+requests = "^2.32.3"
+streamlit = "^1.40.0"
+styles = "^0.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
