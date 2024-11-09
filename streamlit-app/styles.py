@@ -87,7 +87,7 @@ def inject_custom_css():
 
     /* Streamlit markdown text styling */
     .stMarkdown {{
-        background-color: rgba(255, 255, 255, 0.8);  /* 40% transparency with white */
+        background-color: rgba(255, 255, 255, 0.9);  /* 40% transparency with white */
         padding: 20px;
         border-radius: 10px;
         color: {COLOR_TEXT};
@@ -95,6 +95,11 @@ def inject_custom_css():
         margin: 20px auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }}
+    .stColumn {{
+        background-color: rgba(255, 0, 0, 0.2);  /* Example: Light red with transparency */
+        padding: 20px;
+        border-radius: 10px;
+    # }}
 
     </style>
     """, unsafe_allow_html=True)
