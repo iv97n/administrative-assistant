@@ -1,8 +1,11 @@
 from scrapy.crawler import CrawlerProcess
-from src.scraper.scraper.spiders.upf_spider import UpfSpider
-from src.scraper.scraper import settings  
+from scrapy.utils.project import get_project_settings
+from scraper.spiders.upf_spider import UpfSpider
+from scraper import settings  
 
 def run():
+    settings = get_project_settings()
+
     process = CrawlerProcess(settings)
     process.crawl(UpfSpider)
     process.start()

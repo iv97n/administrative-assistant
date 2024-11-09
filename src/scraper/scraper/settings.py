@@ -7,6 +7,15 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+MONGO_URI = 'mongodb://localhost:27017'  # replace with your MongoDB URI
+MONGO_DATABASE = 'ainahack'  # replace with your database name
+MONGO_COLLECTION = 'ainahack'  # replace with your collection name
+
+ITEM_PIPELINES = {
+    'scraper.pipelines.ScraperPipeline': 1,  # Adjust the path to where your pipeline is defined
+}
+
+
 BOT_NAME = "scraper"
 
 SPIDER_MODULES = ["scraper.spiders"]
