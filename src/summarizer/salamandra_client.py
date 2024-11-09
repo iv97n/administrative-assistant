@@ -2,7 +2,8 @@ import requests
 import os
 from dotenv import load_dotenv
 from transformers import AutoTokenizer
-
+import torch
+from transformers import pipeline
 
 load_dotenv()
 
@@ -14,6 +15,7 @@ class SalamandraClient(object):
 
         self.HF_TOKEN = os.getenv("HF_TOKEN")
         self.BASE_URL = os.getenv("BASE_URL")
+        #self.pipe = pipeline("text-generation", model=model_name)
         
 
         self.headers = {
@@ -49,17 +51,27 @@ class SalamandraClient(object):
         {text}
         """
         return self.query_model(text)
+    
+    def givePrediction(self, instruction, context):
+        # Use instruction and context to form a RAG prompt
+        prompt = f"Instruction\n{instruction}\nContext\n{context}\nAnswer\n"
 
-"""
+        # Prepare payload for the API request
+        payload = {
+            "inputs": prompt,
+            "parameters": {}
+        }
 
-file_path = './src/summarizer/data/output_acreditacio-de-coneixements-d-idiomes.data'
+        # Make the API request
+        api_url = self.BASE_URL + "/generate"
+        response = requests.post(api_url, headers=self.headers, json=payload)
 
-
-with open(file_path, 'r', encoding='utf-8') as file:
-    file_content = file.read()
-
-
-client = SalamandraClient()
-
-print(client.summarize_text(file_content))
-"""
+        # Check for successful response and extract answer
+        if response.status_code == 200:
+            response_json = response.json()
+            generated_text = response_json["generated_text"]
+            answer = generated_text.split("Context")[0].strip()
+            return answer
+        else:
+            print(f"Error {response.status_code}: {response.text}")
+            return None
