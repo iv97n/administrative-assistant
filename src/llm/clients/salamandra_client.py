@@ -2,10 +2,12 @@ import requests
 import os
 from dotenv import load_dotenv
 from transformers import AutoTokenizer
-import torch
 from transformers import pipeline
+import streamlit as st
 
 load_dotenv()
+
+
 
 class SalamandraClient(object):
 
@@ -52,9 +54,11 @@ class SalamandraClient(object):
         """
         return self.query_model(text)
     
-    def give_prediction(self, instruction, context):
+    def givePrediction(self, instruction, context):
+       
         # Use instruction and context to form a RAG prompt
         prompt = f"Instruction\n{instruction}\nContext\n{context}\nAnswer\n"
+
 
         # Prepare payload for the API request
         payload = {
