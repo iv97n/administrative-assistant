@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  streamlit-app:
+    container_name: streamlit-app
+    restart: always
+    build:
+      context: "."
+    depends_on:
+      - mongodb
+    ports:
+      - "80:80"
+    environment:
+      - MONGO_URI=mongodb://mongoadmin:secret@mongodb:27017/
+
+
+volumes:
+  mongodb_data:
