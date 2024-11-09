@@ -54,9 +54,6 @@ class SalamandraClient(object):
         """
         return self.query_model(text)
     
-<<<<<<< Updated upstream:src/llm/clients/salamandra_client.py
-    def givePrediction(self, instruction, context):
-=======
     def givePrediction(self, instruction, file_paths):
 
         context = ""
@@ -74,7 +71,6 @@ class SalamandraClient(object):
 
                 except UnicodeDecodeError:
                     raise Exception(f"No se pudo leer el archivo {file_path} con 'utf-8' ni 'ISO-8859-1'.")
->>>>>>> Stashed changes:src/summarizer/salamandra_client.py
        
         # Use instruction and context to form a RAG prompt
         prompt = f"Instruction\n{instruction}\nContext\n{context}\nAnswer\n"
