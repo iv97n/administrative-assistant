@@ -51,7 +51,7 @@ with st.sidebar:
 
   
     # Título de la app
-    st.title("Chatbot Simple")
+    st.title("UPF Student Assistant")
 
     # Instrucciones iniciales
     st.write("Escriu la teva pregunta.")
